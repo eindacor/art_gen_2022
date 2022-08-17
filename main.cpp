@@ -121,6 +121,8 @@ int WinMain (HINSTANCE, HINSTANCE, LPSTR, int)
 
     bool errors_found = false;
 
+    int currentFrame = 0;
+
     while (!finished)
     {
         if (glfwGetTime() > 1.0f / render_fps && !errors_found)
@@ -156,6 +158,13 @@ int WinMain (HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (!paused)
             {
+                if (generator->getSettings().reverse) {
+                    --currentFrame;
+                } else {
+                    ++currentFrame;
+                }
+                context->setUniform1f("current_time", float(currentFrame) / render_fps);
+
                 generator->tickAnimation();
             }
 
@@ -302,6 +311,7 @@ int WinMain (HINSTANCE, HINSTANCE, LPSTR, int)
 
             if (keys->checkPress(GLFW_KEY_SPACE, false))
             {
+                currentFrame = 0;
                 settings.base_seed = "";
 
                 if (keys->checkShiftHold())
