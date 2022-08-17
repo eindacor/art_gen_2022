@@ -2,28 +2,28 @@
 
 #define LIGHT_COUNT 256
 
-layout(location = 0) in vec4 position; 
-layout(location = 1) in vec4 color; 
-layout(location = 2) in float point_size; 
-layout(location = 3) in vec2 palette_position; 
-uniform mat4 MVP; 
-uniform mat4 model_matrix; 
-uniform mat4 view_matrix; 
-uniform vec3 camera_position; 
-uniform vec3 centerpoint; 
-uniform vec4 background_color; 
-uniform mat4 projection_matrix; 
-uniform mat4 fractal_scale = mat4(1.0f); 
-uniform int light_effects_transparency; 
-uniform int lighting_mode; 
-out vec4 fragment_color; 
-uniform float point_size_scale = 1.0f; 
-uniform float illumination_distance; 
-uniform int invert_colors; 
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+layout(location = 2) in float point_size;
+layout(location = 3) in vec2 palette_position;
+uniform mat4 MVP;
+uniform mat4 model_matrix;
+uniform mat4 view_matrix;
+uniform vec3 camera_position;
+uniform vec3 centerpoint;
+uniform vec4 background_color;
+uniform mat4 projection_matrix;
+uniform mat4 fractal_scale = mat4(1.0f);
+uniform int light_effects_transparency;
+uniform int lighting_mode;
+out vec4 fragment_color;
+uniform float point_size_scale = 1.0f;
+uniform float illumination_distance;
+uniform int invert_colors;
 uniform float light_cutoff = float(0.3f);
-uniform mat4 quadrant_matrix; 
-uniform int render_quadrant; 
-uniform int render_palette; 
+uniform mat4 quadrant_matrix;
+uniform int render_quadrant;
+uniform int render_palette;
 uniform int geometry_type; //0 = vertices, 1 = lines, 2 = triangles
 uniform int override_line_color_enabled;
 uniform vec4 line_override_color;
@@ -95,7 +95,7 @@ float getAttenuationFromPosition(float illumination_dist, vec4 light_pos, vec4 v
 	float denom = d / (illumination_dist) + 1.0f;
 	attenuation = 1.0f / (denom * denom);
 	attenuation = (attenuation - cutoff) / (1.0f - cutoff);
-	
+
 	return max(attenuation, 0);
 }
 
@@ -143,7 +143,7 @@ void main()
 		fragment_color = vec4(color.rgb, alpha_value);
 		if (invert_colors > 0)
 		{
-			fragment_color = vec4(vec3(1.0) - fragment_color.rgb, alpha_value); 
+			fragment_color = vec4(vec3(1.0) - fragment_color.rgb, alpha_value);
 		}
 		return;
 	}
@@ -177,7 +177,7 @@ void main()
 
 	if (invert_colors > 0)
 	{
-		fragment_color = vec4(vec3(1.0) - fragment_color.rgb, alpha_value); 
+		fragment_color = vec4(vec3(1.0) - fragment_color.rgb, alpha_value);
 	}
 
 	if (lighting_mode > 0)
@@ -197,17 +197,17 @@ void main()
 			for (int i = 0; i < LIGHT_COUNT; i++)
 			{
 				if (light_positions[i].w < .001f)
-					continue;
+				continue;
 
 				float attenuation = getAttenuationFromPosition(illumination_distance, light_positions[i], scaled_position, light_cutoff);
 
 				if (attenuation <= .001f)
-					continue;
+				continue;
 
 				total_light = combineLights(total_light, (override_light_color_enabled == 1 ? light_override_color : light_colors[i]) * attenuation);
 
 				if (total_light.r >= 1.0f && total_light.g >= 1.0f && total_light.b >= 1.0f)
-					break;
+				break;
 			}
 
 			vec4 ambient_light = background_color;
